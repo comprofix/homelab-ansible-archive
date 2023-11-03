@@ -1,0 +1,54 @@
+---
+ansible_user: root
+docker_configs: "/mnt/nfs/docker"
+install_packages:
+  - vim-nox
+  - git
+  - zsh
+  - curl
+  - wget
+  - apt-transport-https
+  - ca-certificates
+  - gnupg2
+  - python3
+  - python3-pip
+  - nfs-common
+
+docker_edition: 'ce'
+docker_packages:
+  - "docker-{{ docker_edition }}"
+  - "docker-{{ docker_edition }}-cli"
+  - "docker-{{ docker_edition }}-rootless-extras"
+  - "containerd.io"
+  - "docker"
+  - "docker-compose-plugin"
+
+# Docker repo URL.
+docker_url: https://download.docker.com/linux
+docker_apt_repository: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] {{docker_url}}/{{ ansible_distribution | lower}} {{ansible_distribution_release}} stable"
+docker_apt_ignore_key_error: true
+docker_apt_gpg_key: "{{ docker_url }}/{{ ansible_distribution | lower }}/gpg"
+docker_apt_gpg_key_checksum: "sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570"
+docker_apt_filename: "docker"
+# A list of users who will be added to the docker group.
+docker_users: [administrator]
+# Docker daemon options as a dict
+docker_daemon_options: {}
+
+# Install
+traefik_version: "latest"
+traefik_directory: "/mnt/nfs/docker/traefik"
+
+
+# General settings
+traefik_domain: "comprofix.xyz"
+traefik_log_level: "WARNING"
+traefik_accesslog_enable: false
+
+# Enable automatic certificates from Let's Encrypt
+traefik_wildcards:
+  - comprofix.xyz
+  - comprofix.com
+
+CF_API_EMAIL: support@comprofix.com
+CF_DNS_API_TOKEN: YD_v2mcnXbJPGL1K-X-AGtoRu4uZs6um1b21DrOk

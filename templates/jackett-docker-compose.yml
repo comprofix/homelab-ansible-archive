@@ -1,0 +1,26 @@
+---
+version: "2.1"
+services:
+  jackett:
+    image: lscr.io/linuxserver/jackett
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Australia/Brisbane
+      - AUTO_UPDATE=true #optional
+    volumes:
+      - /mnt/nfs/docker/jackett/config:/config
+      - /mnt/nfs/data/torrents:/downloads
+    restart: always
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)"
+      - "traefik.http.routers.{{container_name}}.entrypoints=https"
+      - "traefik.http.routers.{{container_name}}.tls.certresolver=cloudflare"
+
+networks:
+  traefik:
+    external: true 

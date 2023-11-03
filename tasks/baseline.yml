@@ -1,0 +1,46 @@
+---
+# vars file for vim
+- name: Update cache
+  apt:
+    force_apt_get: yes
+    update_cache: yes
+
+- name: Update all packages to their latest version
+  apt:
+    name: "*"
+    force_apt_get: yes
+    state: latest
+
+- name: Upgrade all packages on servers
+  apt: 
+    upgrade: dist
+    force_apt_get: yes
+
+- name: Install required packages
+  package:
+    name: "{{ install_packages }}"
+    state: present
+  become: yes
+  tags:
+    - install_packages
+
+- name: Remove /usr/lib/python3.11/EXTERNALLY-MANAGED
+  file:
+    path: /usr/lib/python3.11/EXTERNALLY-MANAGED
+    state: absent
+
+- name: Mount an NFS volume - docker configs
+  ansible.posix.mount:
+    src: truenas.comprofix.xyz:/mnt/DS4232/docker
+    path: /mnt/nfs/docker
+    opts: rw,sync,hard
+    state: mounted
+    fstype: nfs
+
+- name: Mount an NFS volume - data
+  ansible.posix.mount:
+    src: truenas.comprofix.xyz:/mnt/DS4232/data
+    path: /mnt/nfs/data/
+    opts: rw,sync,hard
+    state: mounted
+    fstype: nfs

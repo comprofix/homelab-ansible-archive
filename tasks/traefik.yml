@@ -1,0 +1,49 @@
+---
+- name: Set Facts
+  set_fact:
+    container_name: 'traefik'
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ docker_configs }}/{{container_name}}"
+    - "{{ docker_configs }}/{{container_name}}/config"
+
+- name: Check that acme.json exists
+  stat:
+    path: "{{ docker_configs }}/{{container_name}}/config/acme.json"
+  register: acme
+
+- name: Create acme.json file
+  file:
+    path: "{{ docker_configs }}/{{container_name}}/config/acme.json"
+    state: touch
+    mode: '0600'
+    access_time: preserve
+    modification_time: preserve
+  when: acme.stat.exists == False
+
+- name: Render traefik settings
+  template:
+    src: templates/traefik-config.yml
+    dest: "{{ docker_configs }}/{{container_name}}/config/config.yml"
+  notify: start docker
+
+- name: Render traefik config
+  template:
+    src: templates/traefik.yml
+    dest: "{{ docker_configs }}/{{container_name}}/config/traefik.yml"
+  notify: start docker
+
+- name: Create traefik docker network
+  docker_network:
+    name: "traefik"
+    state: present
+
+- name: Render docker-compose config
+  template:
+    src: templates/traefik-docker-compose.yml
+    dest: "{{ docker_configs }}/{{container_name}}/docker-compose.yml"
+  notify: start docker

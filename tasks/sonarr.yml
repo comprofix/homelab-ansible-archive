@@ -1,0 +1,18 @@
+---
+- name: Set Facts
+  set_fact:
+    container_name: 'sonarr'
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ docker_configs }}/{{container_name}}"
+    - "{{ docker_configs }}/{{container_name}}/config"
+  
+- name: Render docker-compose config
+  template:
+    src: templates/{{container_name}}-docker-compose.yml
+    dest: "{{ docker_configs }}/{{container_name}}/docker-compose.yml"
+  notify: start docker
