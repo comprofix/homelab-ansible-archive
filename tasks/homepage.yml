@@ -1,7 +1,7 @@
 ---
 - name: Set Facts
   set_fact:
-    container_name: 'qbittorrent'
+    container_name: 'homepage'
 
 - name: Create directories
   file:
@@ -13,28 +13,23 @@
   
 - name: Create the {{container_name}} container
   docker_container:
-    name: qbittorrent
-    image: lscr.io/linuxserver/qbittorrent
+    name: homepage
+    image: ghcr.io/gethomepage/homepage:latest
     restart_policy: always
     recreate: true
     networks:
       - name: traefik
-    ports:
-      - 6881-6889:6881-6889
-      - 6881-6889:6881-6889/udp
     env:
       PUID: "1000"
       PGID: "1000"
       TZ: "Australia/Brisbane"
-      WEBUI_PORT: "8989"
     volumes:
-      - /mnt/nfs/docker/qbittorrent/config:/config
-      - /mnt/nfs/data/downloads:/downloads
+      - /mnt/nfs/docker/{{container_name}}/config:/config
+      - /var/run/docker.sock:/var/run/docker.sock 
     labels:
       traefik.enable=true
-      traefik.http.services.{{container_name}}.loadbalancer.server.port=8989
-      traefik.http.services.{{container_name}}.loadbalancer.server.scheme=http
       traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)
       traefik.http.routers.{{container_name}}.entrypoints=https
       traefik.http.routers.{{container_name}}.tls.certresolver=cloudflare
 
+      

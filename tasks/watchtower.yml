@@ -1,0 +1,22 @@
+---
+- name: Set Facts
+  set_fact:
+    container_name: 'watchtower'
+
+- name: Create the {{container_name}} container
+  docker_container:
+    name: watchtower
+    image: containrrr/watchtower
+    restart_policy: always
+    recreate: true
+    env:
+      TZ: "Australia/Brisbane"
+      WATCHTOWER_SCHEDULE: "0 0 4 * * *"
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_NOTIFICATIONS: "gotify"
+      WATCHTOWER_NOTIFICATION_GOTIFY_URL: "https://gotify.comprofix.com/"
+      WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: "{{GOTIFY_TOKEN}}"
+      WATCHTOWER_WARN_ON_HEAD_FAILURE: "never"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    

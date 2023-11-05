@@ -11,8 +11,19 @@
     - "{{ docker_configs }}/{{container_name}}"
     - "{{ docker_configs }}/{{container_name}}/config"
   
-- name: Render docker-compose config
-  template:
-    src: templates/{{container_name}}-docker-compose.yml
-    dest: "{{ docker_configs }}/{{container_name}}/docker-compose.yml"
-  notify: start docker
+- name: Create the {{container_name}} container
+  docker_container:
+    name: mariadb
+    image: ghcr.io/linuxserver/mariadb:latest
+    restart_policy: always
+    recreate: true
+    ports:
+      - 3306:3306
+    env:
+      PUID: "0"
+      PGID: "0"
+      MYSQL_ROOT_PASSWORD: "8ug58unny"
+      TZ: "Australia/Brisbane"
+    volumes:
+      - /mnt/nfs/docker/mariadb/config:/config
+    

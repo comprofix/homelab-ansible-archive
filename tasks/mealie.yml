@@ -10,9 +10,29 @@
   with_items:
     - "{{ docker_configs }}/{{container_name}}"
     - "{{ docker_configs }}/{{container_name}}/config"
-  
-- name: Render docker-compose config
-  template:
-    src: templates/{{container_name}}-docker-compose.yml
-    dest: "{{ docker_configs }}/{{container_name}}/docker-compose.yml"
-  notify: start docker
+
+- name: Create the {{container_name}} container
+  docker_container:
+    name: mealie
+    image: hkotel/mealie:latest
+    restart_policy: always
+    recreate: true
+    networks:
+      - name: traefik
+    env:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "Australia/Brisbane"
+      RECIPE_PUBLIC: "true"
+      RECIPE_SHOW_NUTRITION: "false"
+      RECIPE_SHOW_ASSETS: "true"
+      RECIPE_LANDSCAPE_VIEW: "true"
+      RECIPE_DISABLE_COMMENTS: "true"
+      RECIPE_DISABLE_AMOUNT: "true"
+    volumes:
+      - /mnt/nfs/docker/mealie/data/:/app/data
+    labels:
+      traefik.enable=true
+      traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)
+      traefik.http.routers.{{container_name}}.entrypoints=https
+      traefik.http.routers.{{container_name}}.tls.certresolver=cloudflare

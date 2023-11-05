@@ -1,6 +1,0 @@
----
-- name: start docker
-  docker_compose:
-    state: present
-    project_src: "{{ docker_configs }}/{{container_name}}"
-    restarted: yes

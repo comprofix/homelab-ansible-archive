@@ -11,8 +11,25 @@
     - "{{ docker_configs }}/{{container_name}}"
     - "{{ docker_configs }}/{{container_name}}/config"
   
-- name: Render docker-compose config
-  template:
-    src: templates/{{container_name}}-docker-compose.yml
-    dest: "{{ docker_configs }}/{{container_name}}/docker-compose.yml"
-  notify: start docker
+- name: Create the {{container_name}} container
+  docker_container:
+    name: sonarr
+    image: lscr.io/linuxserver/sonarr
+    restart_policy: always
+    recreate: true
+    networks:
+      - name: traefik
+    env:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "Australia/Brisbane"
+      DOCKER_MODS: "ghcr.io/gilbn/theme.park:sonarr"
+    volumes:
+      - /mnt/nfs/docker/sonarr/config:/config
+      - /mnt/nfs/data/tvshows:/tv 
+      - /mnt/nfs/data/downloads/:/downloads
+    labels:
+      traefik.enable=true
+      traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)
+      traefik.http.routers.{{container_name}}.entrypoints=https
+      traefik.http.routers.{{container_name}}.tls.certresolver=cloudflare

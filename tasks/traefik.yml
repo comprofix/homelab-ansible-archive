@@ -11,6 +11,20 @@
     - "{{ docker_configs }}/{{container_name}}"
     - "{{ docker_configs }}/{{container_name}}/config"
 
+- name: Check that traefik.json.log exists
+  stat:
+    path: "{{ docker_configs }}/{{container_name}}/config/traefik.json.log"
+  register: traefiklog
+
+- name: Create traefik.json.log file
+  file:
+    path: "{{ docker_configs }}/{{container_name}}/config/traefik.json.log"
+    state: touch
+    mode: '0600'
+    access_time: preserve
+    modification_time: preserve
+  when: traefiklog.stat.exists == False
+
 - name: Check that acme.json exists
   stat:
     path: "{{ docker_configs }}/{{container_name}}/config/acme.json"
@@ -29,21 +43,45 @@
   template:
     src: templates/traefik-config.yml
     dest: "{{ docker_configs }}/{{container_name}}/config/config.yml"
-  notify: start docker
+
 
 - name: Render traefik config
   template:
     src: templates/traefik.yml
     dest: "{{ docker_configs }}/{{container_name}}/config/traefik.yml"
-  notify: start docker
 
 - name: Create traefik docker network
   docker_network:
     name: "traefik"
     state: present
 
-- name: Render docker-compose config
-  template:
-    src: templates/traefik-docker-compose.yml
-    dest: "{{ docker_configs }}/{{container_name}}/docker-compose.yml"
-  notify: start docker
+- name: Create the traefik container
+  docker_container:
+    name: traefik
+    image: traefik:{{ traefik_version }}
+    restart_policy: always
+    recreate: true
+    networks:
+      - name: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+    env:
+      CF_API_EMAIL: "{{ CF_API_EMAIL }}"
+      CF_DNS_API_TOKEN: "{{CF_DNS_API_TOKEN}}"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "{{ docker_configs }}/{{container_name}}/config/traefik.yml:/traefik.yml"
+      - "{{ docker_configs }}/{{container_name}}/config/config.yml:/config.yml"
+      - "{{ docker_configs }}/{{container_name}}/config/acme.json:/acme.json"
+      - "{{ docker_configs }}/{{container_name}}/config/traefik.json.log:/traefik.json.log"
+    labels:
+      traefik.enable=true
+      traefik.http.routers.dashboard.rule=Host(`traefik.{{ traefik_domain }}`)
+      traefik.http.routers.dashboard.service=api@internal
+      traefik.http.routers.dashboard.tls=true
+      traefik.http.routers.dashboard.tls.certresolver=cloudflare
+      traefik.http.routers.dashboard.tls.domains[0].main=comprofix.xyz
+      traefik.http.routers.dashboard.tls.domains[0].sans=*.comprofix.xyz
+      traefik.http.routers.dashboard.tls.domains[1].main=comprofix.com
+      traefik.http.routers.dashboard.tls.domains[1].sans=*.comprofix.com

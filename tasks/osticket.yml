@@ -11,8 +11,23 @@
     - "{{ docker_configs }}/{{container_name}}"
     - "{{ docker_configs }}/{{container_name}}/config"
   
-- name: Render docker-compose config
-  template:
-    src: templates/{{container_name}}-docker-compose.yml
-    dest: "{{ docker_configs }}/{{container_name}}/docker-compose.yml"
-  notify: start docker
+- name: Create the {{container_name}} container
+  docker_container:
+    name: osticket
+    image: osticket:latest
+    restart_policy: always
+    recreate: true
+    networks:
+      - name: traefik
+    env:
+      MYSQL_HOST: "mysql.comprofix.xyz"
+      MYSQL_DATABASE: "comprofix_ost"
+      MYSQL_USER: "comprofix_ost"
+      MYSQL_PASSWORD: "kq@4Ti36"
+    labels:
+      traefik.enable=true
+      traefik.http.services.{{container_name}}.loadbalancer.server.port=80
+      traefik.http.services.{{container_name}}.loadbalancer.server.scheme=http
+      traefik.http.routers.{{container_name}}.rule=Host(`helpdesk.comprofix.com`)
+      traefik.http.routers.{{container_name}}.entrypoints=https
+      traefik.http.routers.{{container_name}}.tls.certresolver=cloudflare

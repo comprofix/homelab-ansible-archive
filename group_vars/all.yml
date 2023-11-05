@@ -45,10 +45,7 @@ traefik_domain: "comprofix.xyz"
 traefik_log_level: "WARNING"
 traefik_accesslog_enable: false
 
-# Enable automatic certificates from Let's Encrypt
-traefik_wildcards:
-  - comprofix.xyz
-  - comprofix.com
-
 CF_API_EMAIL: support@comprofix.com
 CF_DNS_API_TOKEN: YD_v2mcnXbJPGL1K-X-AGtoRu4uZs6um1b21DrOk
+
+GOTIFY_TOKEN: AKHbWy4Yhg6R69W

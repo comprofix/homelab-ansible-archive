@@ -2,82 +2,112 @@
 - hosts: main
   become: yes
 
-  handlers:
-    - include: handlers/handlers.yml
-
   tasks:
     - name: Install Baseline Configuration
-      include_tasks: tasks/baseline.yml
+      import_tasks: tasks/baseline.yml
       tags: baseline_install
     
     - name: Install Docker
-      include_tasks: tasks/docker.yml
+      import_tasks: tasks/docker.yml
       tags: docker_install
     
     - name: Deploy mariadb
-      include_tasks: tasks/mariadb.yml
+      import_tasks: tasks/mariadb.yml
       tags: mariadb_install
 
     - name: "Deploy Traefik"
-      include_tasks: tasks/traefik.yml
+      import_tasks: tasks/traefik.yml
       tags: traefik_install
+    
+    - name: "Deploy Portainer"
+      import_tasks: tasks/portainer.yml
+      tags: portainer_install
+    
+    - name: "Deploy homepage"
+      import_tasks: tasks/homepage.yml
+      tags: homepage_install
 
-    # - name: Deploy dozzle
-    #   include_tasks: tasks/dozzle.yml
-    #   tags: dozzle_install
+    - name: Deploy dozzle
+      import_tasks: tasks/dozzle.yml
+      tags: dozzle_install
 
-    # - name: Deploy bookstack
-    #   include_tasks: tasks/bookstack.yml
-    #   tags: bookstack_install
+    - name: Deploy Invoiceninja
+      import_tasks: tasks/invoiceninja.yml
+      tags: invoiceninja_install
 
-    # - name: Deploy Invoiceninja
-    #   include_tasks: tasks/invoiceninja.yml
-    #   tags: invoiceninja_install
+    - name: Deploy Jackett
+      import_tasks: tasks/jackett.yml
+      tags: jackett_install
+    
+    - name: Deploy Mealie
+      import_tasks: tasks/mealie.yml
+      tags: mealie_install 
 
-    # - name: Deploy Jackett
-    #   include_tasks: tasks/jackett.yml
-    #   tags: jackett_install
+    - name: Deploy sabnzb
+      import_tasks: tasks/sabnzbd.yml
+      tags: sabnzb_install
     
-    # - name: Deploy Mealie
-    #   include_tasks: tasks/mealie.yml
-    #   tags: Mealie_install
-    
-    # - name: Deploy osTicket
-    #   include_tasks: tasks/osticket.yml
-    #   tags: osticket_install
-    
-    # - name: Deploy planka
-    #   include_tasks: tasks/planka.yml
-    #   tags: planka_install
+    - name: Deploy sonarr
+      import_tasks: tasks/sonarr.yml
+      tags: sonarr_install
 
-    # - name: Deploy pykms
-    #   include_tasks: tasks/pykms.yml
-    #   tags: pykms_install
+    - name: Deploy radarr
+      import_tasks: tasks/radarr.yml
+      tags: radarr_install
+
+    - name: Deploy readarr
+      import_tasks: tasks/readarr.yml
+      tags: readarr_install
+
+    - name: Deploy speedtest
+      import_tasks: tasks/speedtest.yml
+      tags: speedtest_install
+
+    - name: Deploy pykms
+      import_tasks: tasks/pykms.yml
+      tags: pykms_install
+       
+    - name: Deploy qbitorrent
+      import_tasks: tasks/qbittorrent.yml
+      tags: qbittorrent_install   
     
-    # - name: Deploy qbitorrent
-    #   include_tasks: tasks/qbittorrent.yml
-    #   tags: qbittorrent_install
+    - name: Deploy vaultwarden
+      import_tasks: tasks/vaultwarden.yml
+      tags: vaultwarden_install
+
+    - name: Deploy planka
+      import_tasks: tasks/planka.yml
+      tags: planka_install
+
+    - name: Deploy osTicket
+      import_tasks: tasks/osticket.yml
+      tags: osticket_install
+
+    - name: Deploy homeassistant
+      import_tasks: tasks/homeassistant.yml
+      tags: homeassistant_install
     
-    # - name: Deploy radarr
-    #   include_tasks: tasks/radarr.yml
-    #   tags: radarr_install
+    - name: Deploy Watchtower
+      import_tasks: tasks/watchtower.yml
+      tags: watchtower_install
+
+- hosts: omada
+  become: yes
+
+  tasks:
+    - name: Install Baseline Configuration
+      import_tasks: tasks/baseline.yml
+      tags: baseline_install
     
-    # - name: Deploy readarr
-    #   include_tasks: tasks/readarr.yml
-    #   tags: readarr_install
+    - name: Install Docker
+      import_tasks: tasks/docker.yml
+      tags: docker_install
+
+    - name: Deploy Omada
+      import_tasks: tasks/omada.yml
+      tags: omada_install
     
-    # - name: Deploy sabnzb
-    #   include_tasks: tasks/sabnzbd.yml
-    #   tags: sabnzb_install
+    - name: Deploy Watchtower
+      import_tasks: tasks/watchtower.yml
+      tags: watchtower_install
     
-    # - name: Deploy sonarr
-    #   include_tasks: tasks/sonarr.yml
-    #   tags: sonarr_install
-    
-    # - name: Deploy speedtest
-    #   include_tasks: tasks/speedtest.yml
-    #   tags: speedtest_install
-    
-    # - name: Deploy vaultwarden
-    #   include_tasks: tasks/vaultwarden.yml
-    #   tags: vaultwarden_install

@@ -16,6 +16,11 @@ entryPoints:
 serversTransport:
   insecureSkipVerify: true
 
+log:
+  level: DEBUG
+  filePath: /traefik.json.log
+  format: json
+
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"

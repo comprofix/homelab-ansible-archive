@@ -1,7 +1,7 @@
 ---
 - name: Set Facts
   set_fact:
-    container_name: 'sabnzbd'
+    container_name: 'omada'
 
 - name: Create directories
   file:
@@ -13,20 +13,30 @@
   
 - name: Create the {{container_name}} container
   docker_container:
-    name: sabnzbd
-    image: linuxserver/sabnzbd:latest
+    name: omada
+    image: mbentley/omada-controller:latest
     restart_policy: always
     recreate: true
-    networks:
-      - name: traefik
+    network_mode: host
     env:
-      PUID: "1000"
-      PGID: "1000"
+      PUID: "508"
+      PGID: "508"
+      MANAGE_HTTP_PORT: "8088"
+      MANAGE_HTTPS_PORT: "8043"
+      PORTAL_HTTP_PORT: "8088"
+      PORTAL_HTTPS_PORT: "8843"
+      PORT_APP_DISCOVERY: "27001"
+      PORT_ADOPT_V1: "29812"
+      PORT_UPGRADE_V1: "29813"
+      PORT_MANAGER_V1: "29811"
+      PORT_MANAGER_V2: "29814"
+      PORT_DISCOVERY: "29810"
+      SHOW_SERVER_LOGS: "true"
+      SHOW_MONGODB_LOGS: "false"
       TZ: "Australia/Brisbane"
-      HOSTNAME: "sabnzbd.comprofix.xyz"
     volumes:
-      - /mnt/nfs/docker/sabnzbd/config:/config
-      - /mnt/nfs/data/downloads:/downloads
+      - /omada/data:/opt/tplink/EAPController/data
+      - /omada/logs:/opt/tplink/EAPController/logs
     labels:
       traefik.enable=true
       traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)
