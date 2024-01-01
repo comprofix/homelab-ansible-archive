@@ -3,10 +3,18 @@
   become: yes
 
   tasks:
+    - hosts: main
+  become: yes
+
+  tasks:
     - name: Install Baseline Configuration
       import_tasks: tasks/baseline.yml
       tags: baseline_install
-    
+
+- hosts: docker
+  become: yes
+
+  tasks:
     - name: Install Docker
       import_tasks: tasks/docker.yml
       tags: docker_install
@@ -114,11 +122,7 @@
 - hosts: omada
   become: yes
 
-  tasks:
-    - name: Install Baseline Configuration
-      import_tasks: tasks/baseline.yml
-      tags: baseline_install
-    
+  tasks: 
     - name: Install Docker
       import_tasks: tasks/docker.yml
       tags: docker_install

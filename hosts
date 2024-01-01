@@ -1,4 +1,12 @@
-[main]
+[main] 
+docker.comprofix.xyz
+omada-server.comprofix.xyz
+gitlab.comprofix.com
+jellyfin-svr.comprofix.com
+vps01.comprofix.com
+vps02.comprofix.com
+
+[docker]
 docker.comprofix.xyz
 
 [omada]
