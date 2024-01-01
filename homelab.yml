@@ -3,10 +3,6 @@
   become: yes
 
   tasks:
-    - hosts: main
-  become: yes
-
-  tasks:
     - name: Install Baseline Configuration
       import_tasks: tasks/baseline.yml
       tags: baseline_install
