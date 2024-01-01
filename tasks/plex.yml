@@ -1,0 +1,50 @@
+---
+- name: Set Facts
+  set_fact:
+    container_name: 'plex'
+    
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ docker_configs }}/{{container_name}}"
+    - "{{ docker_configs }}/{{container_name}}/config"
+  
+- name: Create the {{container_name}} container
+  docker_container:
+    name: plex
+    image: plexinc/pms-docker
+    restart_policy: always
+    recreate: true
+    networks:
+      - name: traefik
+    env:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "Australia/Brisbane"
+      PLEX_CLAIM: "claim-eVnNz1Dyk7VrzyDsnPM9"
+      HOSTNAME: "plex.comprofix.xyz"
+      ADVERTISE_IP: "http://plex.comprofix.xyz:32400/"
+    ports:
+     - 32400:32400/tcp
+     - 32400:32400/udp
+     - 3005:3005/tcp
+     - 8324:8324/tcp
+     - 32469:32469/tcp
+     - 1900:1900/udp
+     - 32410:32410/udp
+     - 32412:32412/udp
+     - 32413:32413/udp
+     - 32414:32414/udp
+    volumes:
+      - /mnt/nfs/docker/plex/config:/config
+      - /mnt/nfs/data/movies:/movies
+      - /mnt/nfs/data/tvshows:/tv 
+    labels:
+      traefik.enable=true
+      traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)
+      traefik.http.routers.{{container_name}}.entrypoints=https
+      traefik.http.routers.{{container_name}}.tls.certresolver=cloudflare
+      traefik.http.services.{{container_name}}.loadbalancer.server.port=32400
+      traefik.http.services.{{container_name}}.loadbalancer.server.scheme=http

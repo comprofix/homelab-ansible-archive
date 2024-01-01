@@ -85,3 +85,5 @@
       traefik.http.routers.dashboard.tls.domains[0].sans=*.comprofix.xyz
       traefik.http.routers.dashboard.tls.domains[1].main=comprofix.com
       traefik.http.routers.dashboard.tls.domains[1].sans=*.comprofix.com
+      traefik.http.routers.dashboard.tls.domains[2].main=gitlab.comprofix.com
+      traefik.http.routers.dashboard.tls.domains[3].main=registry.gitlab.comprofix.com

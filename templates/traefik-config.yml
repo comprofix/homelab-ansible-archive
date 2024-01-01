@@ -19,6 +19,26 @@ http:
         - mid-omada-headers
       tls: {}
       service: omada
+    
+    gitlab:
+      entryPoints:
+        - "https"
+      rule: "Host(`gitlab.comprofix.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: gitlab
+
+    registry.gitlab:
+      entryPoints:
+        - "https"
+      rule: "Host(`registry.gitlab.comprofix.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: gitlab
 
   services:
     jellyfin:
@@ -30,6 +50,16 @@ http:
       loadBalancer:
         servers:
           - url: "https://omada-server.comprofix.xyz:8043/"
+        passHostHeader: true
+    gitlab:
+      loadBalancer:
+        servers:
+          - url: "https://10.10.10.6"
+        passHostHeader: true
+    registry.gitlab:
+      loadBalancer:
+        servers:
+          - url: "https://10.10.10.6"
         passHostHeader: true
 
   middlewares:

@@ -47,17 +47,25 @@
       import_tasks: tasks/sabnzbd.yml
       tags: sabnzb_install
     
-    - name: Deploy sonarr
+    - name: Deploy Sonarr
       import_tasks: tasks/sonarr.yml
       tags: sonarr_install
 
-    - name: Deploy radarr
+    - name: Deploy Radarr
       import_tasks: tasks/radarr.yml
       tags: radarr_install
 
-    - name: Deploy readarr
+    - name: Deploy Readarr
       import_tasks: tasks/readarr.yml
       tags: readarr_install
+
+    - name: Deploy Prowlarr
+      import_tasks: tasks/prowlarr.yml
+      tags: prowlarr_install
+
+    - name: Deploy Lidarr
+      import_tasks: tasks/lidarr.yml
+      tags: lidarr_install
 
     - name: Deploy speedtest
       import_tasks: tasks/speedtest.yml
@@ -90,6 +98,18 @@
     - name: Deploy Watchtower
       import_tasks: tasks/watchtower.yml
       tags: watchtower_install
+
+    - name: Deploy Homarr
+      import_tasks: tasks/homarr.yml
+      tags: homarr_install
+
+    - name: Deploy Dashdot
+      import_tasks: tasks/dashdot.yml
+      tags: dashdot_install
+    
+    - name: Deploy Plex
+      import_tasks: tasks/plex.yml
+      tags: plex_install
 
 - hosts: omada
   become: yes
