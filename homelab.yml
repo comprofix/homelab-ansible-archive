@@ -7,6 +7,14 @@
       import_tasks: tasks/baseline.yml
       tags: baseline_install
 
+- hosts: nfs
+  become: yes
+
+  tasks:
+    - name: Mount NFS Drives
+      import_tasks: tasks/nfs.yml
+      tags: nfs_install
+
 - hosts: docker
   become: yes
 

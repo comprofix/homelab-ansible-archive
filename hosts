@@ -6,6 +6,10 @@ jellyfin-svr.comprofix.xyz
 vps01.comprofix.com
 vps02.comprofix.com
 
+[nfs] 
+docker.comprofix.xyz
+jellyfin-svr.comprofix.xyz
+
 [docker]
 docker.comprofix.xyz
 
