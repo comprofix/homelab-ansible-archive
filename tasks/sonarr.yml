@@ -26,8 +26,7 @@
       DOCKER_MODS: "ghcr.io/gilbn/theme.park:sonarr"
     volumes:
       - /mnt/nfs/docker/sonarr/config:/config
-      - /mnt/nfs/data/tvshows:/tv 
-      - /mnt/nfs/data/downloads/:/downloads
+      - /mnt/nfs/data:/data
     labels:
       traefik.enable=true
       traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)

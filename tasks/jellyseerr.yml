@@ -1,8 +1,8 @@
 ---
 - name: Set Facts
   set_fact:
-    container_name: 'readarr'
-
+    container_name: 'jellyseerr'
+    
 - name: Create directories
   file:
     path: "{{ item }}"
@@ -13,8 +13,8 @@
   
 - name: Create the {{container_name}} container
   docker_container:
-    name: readarr
-    image: lscr.io/linuxserver/readarr:develop
+    name: jellyseerr
+    image: fallenbagel/jellyseerr:latest 
     restart_policy: always
     recreate: true
     networks:
@@ -23,10 +23,8 @@
       PUID: "1000"
       PGID: "1000"
       TZ: "Australia/Brisbane"
-      DOCKER_MODS: "ghcr.io/gilbn/theme.park:readarr"
     volumes:
-      - /dockerdata/readarr/config:/config
-      - /mnt/nfs/data/:/data
+      - /mnt/nfs/docker/jellyseerr/config:/app/config 
     labels:
       traefik.enable=true
       traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)

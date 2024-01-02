@@ -79,6 +79,10 @@
       import_tasks: tasks/lidarr.yml
       tags: lidarr_install
 
+    - name: Deploy Jellyseerr
+      import_tasks: tasks/jellyseerr.yml
+      tags: jellyseerr_install
+
     - name: Deploy speedtest
       import_tasks: tasks/speedtest.yml
       tags: speedtest_install

@@ -26,8 +26,7 @@
       AUTO_UPDATE: "true" #optional
     volumes:
       - /mnt/nfs/docker/lidarr/config:/config
-      - /mnt/nfs/data/music:/music 
-      - /mnt/nfs/data/downloads:/downloads 
+      - /mnt/nfs/data:/data
     labels:
       traefik.enable=true
       traefik.http.routers.{{container_name}}.rule=Host(`{{container_name}}.{{traefik_domain}}`)
